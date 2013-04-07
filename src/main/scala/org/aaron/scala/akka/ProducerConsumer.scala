@@ -9,15 +9,14 @@ import akka.actor.actorRef2Scala
 import akka.event.Logging
 import akka.routing.BroadcastRouter
 import akka.routing.RoundRobinRouter
+import akka.actor.ActorLogging
 
 object ProducerConsumer extends App {
 
   sealed trait ConsumerMessage
   case class IntegerMessage(i: Int) extends ConsumerMessage
 
-  class Consumer extends Actor {
-
-    private val log = Logging(context.system, this)
+  class Consumer extends Actor with ActorLogging {
 
     def receive = {
       case IntegerMessage(i) =>
@@ -28,9 +27,7 @@ object ProducerConsumer extends App {
   sealed trait ProducerMessage
   case class TimeToProduceMessage extends ProducerMessage
 
-  class Producer extends Actor {
-
-    private val log = Logging(context.system, this)
+  class Producer extends Actor with ActorLogging {
 
     private val consumerRouter = context.actorOf(
       Props[Consumer].withRouter(RoundRobinRouter(4)),
