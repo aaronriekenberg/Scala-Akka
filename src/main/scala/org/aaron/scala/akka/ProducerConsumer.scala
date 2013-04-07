@@ -55,7 +55,8 @@ object ProducerConsumer extends App {
     import system.dispatcher
 
     val cancellable =
-      system.scheduler.schedule(initialDelay = 500 milliseconds,
+      system.scheduler.schedule(
+        initialDelay = 500 milliseconds,
         interval = 500 milliseconds,
         receiver = producer,
         message = TimeToProduceMessage)
