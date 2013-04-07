@@ -1,15 +1,13 @@
 package org.aaron.scala.akka
 
-import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.duration.DurationLong
+
 import akka.actor.Actor
+import akka.actor.ActorLogging
 import akka.actor.ActorSystem
 import akka.actor.Props
 import akka.actor.actorRef2Scala
-import akka.event.Logging
-import akka.routing.BroadcastRouter
 import akka.routing.RoundRobinRouter
-import akka.actor.ActorLogging
 
 object ProducerConsumer extends App {
 
@@ -33,11 +31,12 @@ object ProducerConsumer extends App {
       Props[Consumer].withRouter(RoundRobinRouter(4)),
       name = "ConsumerRouter")
 
-    private val i = new AtomicInteger(0)
+    private var i = 0
 
     def receive = {
       case TimeToProduceMessage => {
-        val message = IntegerMessage(i.getAndIncrement())
+        val message = IntegerMessage(i)
+        i += 1
         log.info(s"producing ${message.i}")
         consumerRouter ! message
       }
